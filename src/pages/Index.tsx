@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
@@ -7,12 +7,44 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Badge } from '@/components/ui/badge';
 import Icon from '@/components/ui/icon';
 import { bookContent } from '@/data/bookContent';
+import AuthDialog from '@/components/AuthDialog';
+import DonationDialog from '@/components/DonationDialog';
+import ReadingSettings from '@/components/ReadingSettings';
 
 const Index = () => {
   const [currentChapter, setCurrentChapter] = useState(bookContent[0]);
   const [bookmarks, setBookmarks] = useState<string[]>([]);
   const [progress, setProgress] = useState(0);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [user, setUser] = useState<{ email: string; name: string } | null>(null);
+  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
+  const [fontSize, setFontSize] = useState(100);
+
+  useEffect(() => {
+    const savedUser = localStorage.getItem('user');
+    if (savedUser) setUser(JSON.parse(savedUser));
+    
+    const savedTheme = localStorage.getItem('theme') as 'light' | 'dark';
+    if (savedTheme) setTheme(savedTheme);
+    
+    const savedFontSize = localStorage.getItem('fontSize');
+    if (savedFontSize) setFontSize(parseInt(savedFontSize));
+  }, []);
+
+  useEffect(() => {
+    document.documentElement.classList.remove('light', 'dark');
+    document.documentElement.classList.add(theme);
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  useEffect(() => {
+    localStorage.setItem('fontSize', fontSize.toString());
+  }, [fontSize]);
+
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    setUser(null);
+  };
 
   const currentIndex = bookContent.findIndex(ch => ch.id === currentChapter.id);
 
@@ -82,14 +114,15 @@ const Index = () => {
                 <Icon name="BookOpen" className="mr-2" />
                 Начать чтение
               </Button>
-              <Button 
-                size="lg" 
-                variant="outline"
-                className="border-cyber-blue text-cyber-blue hover:bg-cyber-blue/10"
-              >
-                <Icon name="Info" className="mr-2" />
-                О книге
-              </Button>
+              <DonationDialog>
+                <Button 
+                  size="lg" 
+                  className="bg-gradient-to-r from-cyber-pink to-cyber-purple hover:opacity-90"
+                >
+                  <Icon name="Heart" className="mr-2" />
+                  Поддержать
+                </Button>
+              </DonationDialog>
             </div>
           </div>
         </div>
@@ -98,13 +131,14 @@ const Index = () => {
       <section className="container mx-auto px-4 py-12">
         <div className="max-w-5xl mx-auto">
           <div className="flex items-center justify-between mb-8 pb-4 border-b border-border">
-            <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
-              <SheetTrigger asChild>
-                <Button variant="outline" size="sm" className="gap-2">
-                  <Icon name="Menu" size={20} />
-                  Оглавление
-                </Button>
-              </SheetTrigger>
+            <div className="flex items-center gap-3">
+              <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
+                <SheetTrigger asChild>
+                  <Button variant="outline" size="sm" className="gap-2">
+                    <Icon name="Menu" size={20} />
+                    Оглавление
+                  </Button>
+                </SheetTrigger>
               <SheetContent side="left" className="w-80 bg-card border-border">
                 <div className="py-6">
                   <h2 className="text-2xl font-heading font-bold mb-6 text-cyber-pink">Главы</h2>
@@ -141,17 +175,39 @@ const Index = () => {
                   </ScrollArea>
                 </div>
               </SheetContent>
-            </Sheet>
-
-            <div className="flex gap-2">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={toggleBookmark}
-                className={bookmarks.includes(currentChapter.id) ? 'text-cyber-blue' : ''}
+              </Sheet>
+              
+              <ReadingSettings
+                theme={theme}
+                fontSize={fontSize}
+                onThemeChange={setTheme}
+                onFontSizeChange={setFontSize}
               >
-                <Icon name={bookmarks.includes(currentChapter.id) ? 'Bookmark' : 'BookmarkPlus'} size={20} />
-              </Button>
+                <Button variant="outline" size="sm" className="gap-2">
+                  <Icon name="Settings" size={20} />
+                  Настройки
+                </Button>
+              </ReadingSettings>
+            </div>
+            
+            <div className="flex items-center gap-3">
+              {user ? (
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-muted-foreground hidden sm:inline">
+                    {user.name}
+                  </span>
+                  <Button variant="ghost" size="sm" onClick={handleLogout}>
+                    <Icon name="LogOut" size={16} />
+                  </Button>
+                </div>
+              ) : (
+                <AuthDialog onAuthSuccess={setUser}>
+                  <Button variant="outline" size="sm" className="gap-2">
+                    <Icon name="User" size={16} />
+                    Войти
+                  </Button>
+                </AuthDialog>
+              )}
             </div>
           </div>
 
@@ -164,11 +220,22 @@ const Index = () => {
           </div>
 
           <Card className="p-8 md:p-12 bg-card border-border shadow-lg animate-fade-in">
-            <h2 className="text-3xl md:text-4xl font-heading font-bold mb-8 text-transparent bg-clip-text bg-gradient-to-r from-cyber-pink to-cyber-purple">
-              {currentChapter.title}
-            </h2>
+            <div className="flex items-start justify-between mb-8">
+              <h2 className="text-3xl md:text-4xl font-heading font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyber-pink to-cyber-purple">
+                {currentChapter.title}
+              </h2>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={toggleBookmark}
+                className={bookmarks.includes(currentChapter.id) ? 'text-cyber-blue' : ''}
+              >
+                <Icon name={bookmarks.includes(currentChapter.id) ? 'Bookmark' : 'BookmarkPlus'} size={20} />
+              </Button>
+            </div>
             <div 
               className="prose prose-invert prose-lg max-w-none"
+              style={{ fontSize: `${fontSize}%` }}
               dangerouslySetInnerHTML={{ __html: currentChapter.content }}
             />
           </Card>
