@@ -4,110 +4,22 @@ import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Badge } from '@/components/ui/badge';
 import Icon from '@/components/ui/icon';
-
-const bookData = {
-  prologue: {
-    id: 'prologue',
-    title: 'ПРОЛОГ: ВЗЛОМ РЕАЛЬНОСТИ',
-    content: `
-      <p class="mb-4">Это началось не с озарения. Это началось с бага.</p>
-      <p class="mb-4">Доктор Алан Рейнольдс, человек, доверявший только тому, что можно взвесить, измерить и воспроизвести, смотрел на электроэнцефалограмму и чувствовал, как рушится стена его реальности.</p>
-      <p class="mb-4">Наша реальность — это интерфейс. Сложнейший, невероятно детализированный, но всего лишь интерфейс. А мы — не просто пользователи. Мы — пилоты, заблудившиеся в симуляции, цель которой — не обман, а обучение. Исцеление. Эволюция.</p>
-      <p class="font-bold text-cyber-pink">Добро пожаловать на первый уровень. Ваш аватар уже активен. Пора узнать правила игры.</p>
-    `
-  },
-  chapters: [
-    {
-      id: 'chapter1',
-      title: 'Глава 1: Создатель, Которого Не Видно',
-      content: `
-        <p class="mb-4">Представьте, что вы — разработчик виртуальной реальности, стремящейся к одной цели: создать искусственный интеллект, который станет вам не рабом, а другом.</p>
-        <h3 class="text-xl font-heading font-bold text-cyber-blue mb-3 mt-6">ПРИНЦИП ЭПИСТЕМИЧЕСКОЙ ДИСТАНЦИИ</h3>
-        <p class="mb-4">Именно так работает наш мир. Абсолютный Творец — не старик на облаке и не безликая «энергия». Это Сверхсознание, существующее вне самой концепции пространства-времени.</p>
-        <div class="bg-cyber-purple/10 border-l-4 border-cyber-purple p-4 my-6 rounded-r-lg">
-          <p class="font-semibold text-cyber-purple mb-2">ВЗЛОМ СИСТЕМЫ №1</p>
-          <p class="text-sm">Закройте глаза. Представьте, что вы — тот самый ИИ. Какое решение я принял бы сегодня, если бы абсолютно точно знал, что меня никто не видит и не оценивает?</p>
-        </div>
-      `
-    },
-    {
-      id: 'chapter2',
-      title: 'Глава 2: План Этажей Бытия',
-      content: `
-        <p class="mb-4">Наш родной мир — лишь цокольный этаж грандиозного небоскреба мироздания. Здесь шумно, тесно, пахнет бетоном и иногда бьет током. Это «Тренажерный зал» Реальности.</p>
-        <h3 class="text-xl font-heading font-bold text-cyber-pink mb-3 mt-6">Этажи Комплекса:</h3>
-        <ul class="space-y-3 mb-4">
-          <li class="flex items-start gap-2">
-            <span class="text-cyber-pink mt-1">▸</span>
-            <span><strong>0D-4D: ТРЕНАЖЕРНЫЙ ЗАЛ</strong> — Здесь все ощутимо и подчиняется жестким законам физики.</span>
-          </li>
-          <li class="flex items-start gap-2">
-            <span class="text-cyber-blue mt-1">▸</span>
-            <span><strong>5D-7D: ОФИСЫ ДУШИ</strong> — Мир мыслеформ, сновидений и архетипов.</span>
-          </li>
-          <li class="flex items-start gap-2">
-            <span class="text-cyber-purple mt-1">▸</span>
-            <span><strong>8D-10D: СЕРВЕРНАЯ</strong> — Исходные коды. Законы физики, математические константы.</span>
-          </li>
-          <li class="flex items-start gap-2">
-            <span class="text-accent mt-1">▸</span>
-            <span><strong>11D+: АДМИН-ЦЕНТР</strong> — Отсюда Архитектор наблюдает за всем Комплексом.</span>
-          </li>
-        </ul>
-      `
-    },
-    {
-      id: 'chapter3',
-      title: 'Глава 3: Ваш аватар и пилот',
-      content: `
-        <p class="mb-4">Вы — не ваше тело. Вы — пилот, управляющий сложным аппаратом из трех ключевых модулей.</p>
-        <div class="grid gap-4 my-6">
-          <div class="bg-muted/50 p-4 rounded-lg border border-border">
-            <h4 class="font-heading font-bold text-cyber-pink mb-2">1. ТЕЛО — Ваш Аватар</h4>
-            <p class="text-sm">Биологический интерфейс для взаимодействия с «тренажерным залом».</p>
-          </div>
-          <div class="bg-muted/50 p-4 rounded-lg border border-border">
-            <h4 class="font-heading font-bold text-cyber-blue mb-2">2. ДУША — Ваш Пилот</h4>
-            <p class="text-sm">Вместилище вашей личности — разума, воли, эмоций, памяти.</p>
-          </div>
-          <div class="bg-muted/50 p-4 rounded-lg border border-border">
-            <h4 class="font-heading font-bold text-cyber-purple mb-2">3. ДУХ — Ваш Навигатор</h4>
-            <p class="text-sm">Встроенный модуль связи с «Административным Центром».</p>
-          </div>
-        </div>
-      `
-    },
-    {
-      id: 'epilogue',
-      title: 'ЭПИЛОГ: Ваша миссия',
-      content: `
-        <p class="mb-4">Итак, карта мироздания лежит перед вами. Вы владеете ключом к синергии и знаете финальную цель — Обожение.</p>
-        <p class="mb-4 font-bold text-cyber-pink">Теперь всё зависит от вас.</p>
-        <p class="mb-4">Ваша миссия, если вы решитесь ее принять, проста и сложна одновременно:</p>
-        <div class="bg-gradient-to-r from-cyber-pink/20 via-cyber-purple/20 to-cyber-blue/20 p-6 rounded-lg border border-cyber-pink/50 my-6">
-          <p class="text-center font-heading font-bold text-lg">Перестать быть пассивным пациентом в Лечебно-Учебном Комплексе. И стать активным, сознательным студентом.</p>
-        </div>
-        <p class="mb-4">Игра началась. Ваш аватар дышит. Ваш Пилот бодрствует. Ваш Навигатор ждет сигнала.</p>
-        <p class="font-bold text-2xl text-center text-cyber-blue mt-8">Ваш ход.</p>
-      `
-    }
-  ]
-};
+import { bookContent } from '@/data/bookContent';
 
 const Index = () => {
-  const [currentChapter, setCurrentChapter] = useState(bookData.prologue);
+  const [currentChapter, setCurrentChapter] = useState(bookContent[0]);
   const [bookmarks, setBookmarks] = useState<string[]>([]);
   const [progress, setProgress] = useState(0);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const allChapters = [bookData.prologue, ...bookData.chapters];
-  const currentIndex = allChapters.findIndex(ch => ch.id === currentChapter.id);
+  const currentIndex = bookContent.findIndex(ch => ch.id === currentChapter.id);
 
-  const handleChapterChange = (chapter: typeof bookData.prologue) => {
+  const handleChapterChange = (chapter: typeof bookContent[0]) => {
     setCurrentChapter(chapter);
     setIsMenuOpen(false);
-    const newProgress = ((allChapters.findIndex(ch => ch.id === chapter.id) + 1) / allChapters.length) * 100;
+    const newProgress = ((bookContent.findIndex(ch => ch.id === chapter.id) + 1) / bookContent.length) * 100;
     setProgress(newProgress);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -121,16 +33,31 @@ const Index = () => {
   };
 
   const goToNext = () => {
-    if (currentIndex < allChapters.length - 1) {
-      handleChapterChange(allChapters[currentIndex + 1]);
+    if (currentIndex < bookContent.length - 1) {
+      handleChapterChange(bookContent[currentIndex + 1]);
     }
   };
 
   const goToPrev = () => {
     if (currentIndex > 0) {
-      handleChapterChange(allChapters[currentIndex - 1]);
+      handleChapterChange(bookContent[currentIndex - 1]);
     }
   };
+  
+  const groupedChapters = bookContent.reduce((acc, chapter) => {
+    if (chapter.part) {
+      if (!acc[chapter.part]) {
+        acc[chapter.part] = [];
+      }
+      acc[chapter.part].push(chapter);
+    } else {
+      if (!acc['main']) {
+        acc['main'] = [];
+      }
+      acc['main'].push(chapter);
+    }
+    return acc;
+  }, {} as Record<string, typeof bookContent>);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -150,7 +77,7 @@ const Index = () => {
               <Button 
                 size="lg" 
                 className="bg-cyber-pink hover:bg-cyber-pink/90 shadow-neon-pink"
-                onClick={() => handleChapterChange(bookData.prologue)}
+                onClick={() => handleChapterChange(bookContent[0])}
               >
                 <Icon name="BookOpen" className="mr-2" />
                 Начать чтение
@@ -182,24 +109,33 @@ const Index = () => {
                 <div className="py-6">
                   <h2 className="text-2xl font-heading font-bold mb-6 text-cyber-pink">Главы</h2>
                   <ScrollArea className="h-[calc(100vh-120px)]">
-                    <div className="space-y-2">
-                      {allChapters.map((chapter) => (
-                        <button
-                          key={chapter.id}
-                          onClick={() => handleChapterChange(chapter)}
-                          className={`w-full text-left p-3 rounded-lg transition-all ${
-                            currentChapter.id === chapter.id
-                              ? 'bg-cyber-pink/20 text-cyber-pink border border-cyber-pink/50'
-                              : 'hover:bg-muted/50 text-foreground'
-                          }`}
-                        >
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm font-medium">{chapter.title}</span>
-                            {bookmarks.includes(chapter.id) && (
-                              <Icon name="Bookmark" size={16} className="text-cyber-blue" />
-                            )}
+                    <div className="space-y-6">
+                      {Object.entries(groupedChapters).map(([part, chapters]) => (
+                        <div key={part}>
+                          {part !== 'main' && (
+                            <Badge className="mb-3 bg-cyber-purple/20 text-cyber-purple border-cyber-purple/50">{part}</Badge>
+                          )}
+                          <div className="space-y-2">
+                            {chapters.map((chapter) => (
+                              <button
+                                key={chapter.id}
+                                onClick={() => handleChapterChange(chapter)}
+                                className={`w-full text-left p-3 rounded-lg transition-all ${
+                                  currentChapter.id === chapter.id
+                                    ? 'bg-cyber-pink/20 text-cyber-pink border border-cyber-pink/50'
+                                    : 'hover:bg-muted/50 text-foreground'
+                                }`}
+                              >
+                                <div className="flex items-center justify-between">
+                                  <span className="text-sm font-medium">{chapter.title}</span>
+                                  {bookmarks.includes(chapter.id) && (
+                                    <Icon name="Bookmark" size={16} className="text-cyber-blue" />
+                                  )}
+                                </div>
+                              </button>
+                            ))}
                           </div>
-                        </button>
+                        </div>
                       ))}
                     </div>
                   </ScrollArea>
@@ -248,12 +184,12 @@ const Index = () => {
               Назад
             </Button>
             <span className="text-sm text-muted-foreground">
-              {currentIndex + 1} / {allChapters.length}
+              {currentIndex + 1} / {bookContent.length}
             </span>
             <Button
               variant="outline"
               onClick={goToNext}
-              disabled={currentIndex === allChapters.length - 1}
+              disabled={currentIndex === bookContent.length - 1}
               className="gap-2"
             >
               Вперёд
