@@ -11,6 +11,7 @@ import AuthDialog from '@/components/AuthDialog';
 import DonationDialog from '@/components/DonationDialog';
 import ReadingSettings from '@/components/ReadingSettings';
 import ShareDialog from '@/components/ShareDialog';
+import ExportDialog from '@/components/ExportDialog';
 
 const Index = () => {
   const [currentChapter, setCurrentChapter] = useState(bookContent[0]);
@@ -212,6 +213,13 @@ const Index = () => {
                   Поделиться
                 </Button>
               </ShareDialog>
+
+              <ExportDialog user={user}>
+                <Button variant="outline" size="sm" className="gap-2">
+                  <Icon name="Download" size={20} />
+                  Скачать
+                </Button>
+              </ExportDialog>
             </div>
             
             <div className="flex items-center gap-3">
