@@ -693,20 +693,17 @@ const ExportDialog = ({ user, children }: ExportDialogProps) => {
     pdf.line(margin, yPosition, pageWidth - margin, yPosition);
     yPosition += 10;
 
-    const chapterPageMap: { [key: string]: number } = {};
-    let currentPage = 3;
-    
     pdf.setFont('helvetica', 'normal');
     pdf.setFontSize(11);
     pdf.setTextColor(51, 51, 51);
     
     let lastPart = '';
+    
     bookContent.forEach((chapter, idx) => {
       if (yPosition > pageHeight - margin - 15) {
         addPageNumber();
         pdf.addPage();
         yPosition = margin;
-        pageNumber++;
       }
       
       if (chapter.part && chapter.part !== lastPart) {
@@ -721,7 +718,6 @@ const ExportDialog = ({ user, children }: ExportDialogProps) => {
             addPageNumber();
             pdf.addPage();
             yPosition = margin;
-            pageNumber++;
           }
           pdf.text(line, margin + 5, yPosition);
           yPosition += 6;
@@ -732,29 +728,17 @@ const ExportDialog = ({ user, children }: ExportDialogProps) => {
         pdf.setTextColor(51, 51, 51);
       }
       
-      chapterPageMap[chapter.id] = currentPage;
-      
       const chapterTitle = `${idx + 1}. ${chapter.title}`;
       const titleLines = pdf.splitTextToSize(chapterTitle, maxWidth - 30);
-      titleLines.forEach((line: string, lineIdx: number) => {
+      titleLines.forEach((line: string) => {
         if (yPosition > pageHeight - margin - 15) {
           addPageNumber();
           pdf.addPage();
           yPosition = margin;
-          pageNumber++;
         }
         pdf.text(line, margin + 10, yPosition);
-        
-        if (lineIdx === titleLines.length - 1) {
-          const pageNumText = String(currentPage);
-          const pageNumWidth = pdf.getTextWidth(pageNumText);
-          pdf.text(pageNumText, pageWidth - margin - pageNumWidth, yPosition);
-        }
-        
         yPosition += 5;
       });
-      
-      currentPage++;
     });
     
     addPageNumber();
