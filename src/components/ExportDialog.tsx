@@ -8,6 +8,7 @@ import { bookContent } from '@/data/bookContent';
 import { useToast } from '@/hooks/use-toast';
 import { Document, Paragraph, TextRun, HeadingLevel, AlignmentType, PageBreak, BorderStyle, Table, TableCell, TableRow, WidthType } from 'docx';
 import { saveAs } from 'file-saver';
+import jsPDF from 'jspdf';
 
 interface ExportDialogProps {
   user: { email: string; name: string } | null;
@@ -518,10 +519,135 @@ const ExportDialog = ({ user, children }: ExportDialogProps) => {
 
   const exportAsPdf = async () => {
     toast({
-      title: "PDF экспорт",
-      description: "Откройте HTML версию и используйте Печать → Сохранить как PDF в браузере для создания PDF файла.",
+      title: "Генерируем PDF",
+      description: "Создаём PDF с разбивкой по страницам. Это может занять несколько минут...",
     });
-    exportAsHtml();
+
+    const pdf = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a4',
+    });
+
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const margin = 20;
+    const maxWidth = pageWidth - margin * 2;
+    let yPosition = margin;
+
+    pdf.setFont('helvetica', 'bold');
+    pdf.setFontSize(28);
+    pdf.setTextColor(217, 70, 239);
+    
+    const title = 'КОД ИСПЫТАНИЯ';
+    const titleWidth = pdf.getTextWidth(title);
+    pdf.text(title, (pageWidth - titleWidth) / 2, yPosition);
+    yPosition += 15;
+
+    pdf.setFont('helvetica', 'italic');
+    pdf.setFontSize(14);
+    pdf.setTextColor(102, 102, 102);
+    
+    const subtitle1 = 'За пределами Матрицы Души';
+    const subtitle1Width = pdf.getTextWidth(subtitle1);
+    pdf.text(subtitle1, (pageWidth - subtitle1Width) / 2, yPosition);
+    yPosition += 8;
+
+    const subtitle2 = 'Единая Теория Многомерного Духовного Испытания';
+    const subtitle2Width = pdf.getTextWidth(subtitle2);
+    pdf.text(subtitle2, (pageWidth - subtitle2Width) / 2, yPosition);
+
+    let currentPart = '';
+    
+    for (let i = 0; i < bookContent.length; i++) {
+      const chapter = bookContent[i];
+      
+      pdf.addPage();
+      yPosition = margin;
+
+      if (chapter.part && chapter.part !== currentPart) {
+        currentPart = chapter.part;
+        
+        pdf.setFont('helvetica', 'bold');
+        pdf.setFontSize(20);
+        pdf.setTextColor(139, 92, 246);
+        
+        const partLines = pdf.splitTextToSize(chapter.part, maxWidth);
+        partLines.forEach((line: string) => {
+          const lineWidth = pdf.getTextWidth(line);
+          pdf.text(line, (pageWidth - lineWidth) / 2, yPosition);
+          yPosition += 10;
+        });
+        
+        pdf.setDrawColor(139, 92, 246);
+        pdf.setLineWidth(0.5);
+        pdf.line(margin, yPosition, pageWidth - margin, yPosition);
+        yPosition += 15;
+      }
+
+      pdf.setFont('helvetica', 'bold');
+      pdf.setFontSize(18);
+      pdf.setTextColor(217, 70, 239);
+      
+      const titleLines = pdf.splitTextToSize(chapter.title, maxWidth);
+      titleLines.forEach((line: string) => {
+        pdf.text(line, margin, yPosition);
+        yPosition += 10;
+      });
+      yPosition += 5;
+
+      const contentText = stripHtml(chapter.content);
+      const paragraphs = contentText.split('\n\n').filter(p => p.trim());
+      
+      pdf.setFont('helvetica', 'normal');
+      pdf.setFontSize(11);
+      pdf.setTextColor(51, 51, 51);
+
+      for (const paragraph of paragraphs) {
+        if (yPosition > pageHeight - margin - 20) {
+          pdf.addPage();
+          yPosition = margin;
+        }
+
+        const lines = pdf.splitTextToSize(paragraph.trim(), maxWidth);
+        
+        for (const line of lines) {
+          if (yPosition > pageHeight - margin - 10) {
+            pdf.addPage();
+            yPosition = margin;
+          }
+          
+          pdf.text(line, margin, yPosition);
+          yPosition += 6;
+        }
+        
+        yPosition += 4;
+      }
+    }
+
+    pdf.addPage();
+    yPosition = pageHeight / 2 - 30;
+    
+    pdf.setFont('helvetica', 'bold');
+    pdf.setFontSize(14);
+    pdf.setTextColor(102, 102, 102);
+    const copyright = '© Единая Теория Многомерного Духовного Испытания';
+    const copyrightWidth = pdf.getTextWidth(copyright);
+    pdf.text(copyright, (pageWidth - copyrightWidth) / 2, yPosition);
+    yPosition += 15;
+
+    pdf.setFont('helvetica', 'italic');
+    pdf.setFontSize(10);
+    pdf.setTextColor(136, 136, 136);
+    const disclaimer = '«Эта теория — умозрительная картография Трансцендентного, рабочая гипотеза, а не догма. Её ценность в эвристичности, внутренней непротиворечивости и способности придавать глубокий смысл человеческому опыту, не претендуя на исчерпывающую истину.»';
+    const disclaimerLines = pdf.splitTextToSize(disclaimer, maxWidth - 40);
+    disclaimerLines.forEach((line: string) => {
+      const lineWidth = pdf.getTextWidth(line);
+      pdf.text(line, (pageWidth - lineWidth) / 2, yPosition);
+      yPosition += 6;
+    });
+
+    pdf.save('kod-ispytaniya.pdf');
   };
 
   const handleExport = async () => {
@@ -617,7 +743,7 @@ const ExportDialog = ({ user, children }: ExportDialogProps) => {
                       <Icon name="FileText" size={20} className="text-red-500" />
                       <div>
                         <div className="font-medium">PDF</div>
-                        <div className="text-sm text-muted-foreground">Через печать HTML в браузере</div>
+                        <div className="text-sm text-muted-foreground">С разбивкой по страницам как на сайте</div>
                       </div>
                     </div>
                   </Label>
