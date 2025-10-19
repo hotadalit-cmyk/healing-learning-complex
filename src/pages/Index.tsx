@@ -29,6 +29,16 @@ const Index = () => {
     
     const savedFontSize = localStorage.getItem('fontSize');
     if (savedFontSize) setFontSize(parseInt(savedFontSize));
+
+    const savedChapterId = localStorage.getItem('lastChapterId');
+    if (savedChapterId) {
+      const savedChapter = bookContent.find(ch => ch.id === savedChapterId);
+      if (savedChapter) {
+        setCurrentChapter(savedChapter);
+        const newProgress = ((bookContent.findIndex(ch => ch.id === savedChapterId) + 1) / bookContent.length) * 100;
+        setProgress(newProgress);
+      }
+    }
   }, []);
 
   useEffect(() => {
@@ -53,6 +63,7 @@ const Index = () => {
     setIsMenuOpen(false);
     const newProgress = ((bookContent.findIndex(ch => ch.id === chapter.id) + 1) / bookContent.length) * 100;
     setProgress(newProgress);
+    localStorage.setItem('lastChapterId', chapter.id);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -109,10 +120,15 @@ const Index = () => {
               <Button 
                 size="lg" 
                 className="bg-cyber-pink hover:bg-cyber-pink/90 shadow-neon-pink"
-                onClick={() => handleChapterChange(bookContent[0])}
+                onClick={() => {
+                  const lastChapterId = localStorage.getItem('lastChapterId');
+                  const savedChapter = lastChapterId ? bookContent.find(ch => ch.id === lastChapterId) : null;
+                  handleChapterChange(savedChapter || bookContent[0]);
+                  document.getElementById('reading-section')?.scrollIntoView({ behavior: 'smooth' });
+                }}
               >
                 <Icon name="BookOpen" className="mr-2" />
-                Начать чтение
+                {localStorage.getItem('lastChapterId') ? 'Продолжить чтение' : 'Начать чтение'}
               </Button>
               <DonationDialog>
                 <Button 
@@ -128,7 +144,7 @@ const Index = () => {
         </div>
       </section>
 
-      <section className="container mx-auto px-4 py-12">
+      <section id="reading-section" className="container mx-auto px-4 py-12">
         <div className="max-w-5xl mx-auto">
           <div className="flex items-center justify-between mb-8 pb-4 border-b border-border">
             <div className="flex items-center gap-3">
