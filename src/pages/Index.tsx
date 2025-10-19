@@ -10,6 +10,7 @@ import { bookContent } from '@/data/bookContent';
 import AuthDialog from '@/components/AuthDialog';
 import DonationDialog from '@/components/DonationDialog';
 import ReadingSettings from '@/components/ReadingSettings';
+import ShareDialog from '@/components/ShareDialog';
 
 const Index = () => {
   const [currentChapter, setCurrentChapter] = useState(bookContent[0]);
@@ -204,6 +205,13 @@ const Index = () => {
                   Настройки
                 </Button>
               </ReadingSettings>
+
+              <ShareDialog>
+                <Button variant="outline" size="sm" className="gap-2">
+                  <Icon name="Share2" size={20} />
+                  Поделиться
+                </Button>
+              </ShareDialog>
             </div>
             
             <div className="flex items-center gap-3">
