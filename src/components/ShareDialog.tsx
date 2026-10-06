@@ -112,13 +112,13 @@ const ShareDialog = ({
                 className="h-auto py-4 flex flex-col gap-2 hover:border-cyber-pink/50 transition-all"
                 onClick={() => handleShare(link.url)}
               >
-                <Icon name={link.icon as any} className={`${link.color}`} size={24} />
+                <Icon name={link.icon} className={`${link.color}`} size={24} />
                 <span className="text-sm">{link.name}</span>
               </Button>
             ))}
           </div>
 
-          {navigator.share && (
+          {typeof navigator !== 'undefined' && 'share' in navigator && (
             <Button
               variant="outline"
               className="w-full gap-2"
