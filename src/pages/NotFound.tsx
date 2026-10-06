@@ -5,6 +5,14 @@ const NotFound = () => {
   const location = useLocation();
 
   useEffect(() => {
+    document.title = 'Страница не найдена — ТОКОХОД';
+    let robots = document.querySelector<HTMLMetaElement>('meta[name="robots"]');
+    if (!robots) {
+      robots = document.createElement('meta');
+      robots.name = 'robots';
+      document.head.appendChild(robots);
+    }
+    robots.content = 'noindex,follow';
     console.error(
       "404 Error: User attempted to access non-existent route:",
       location.pathname

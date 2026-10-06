@@ -1,0 +1,20 @@
+{
+  "name": "ТОКОХОД — сервис электротранспорта",
+  "short_name": "ТОКОХОД",
+  "description": "Сервисная платформа ТОКОХОД в Великом Новгороде",
+  "lang": "ru",
+  "start_url": "/client",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f7f4ee",
+  "theme_color": "#17365d",
+  "icons": [
+    {
+      "src": "/tokohod-mark.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -60,7 +60,7 @@ const ExportDialog = ({ user, children }: ExportDialogProps) => {
 
         switch (tagName) {
           case 'h3':
-          case 'h4':
+          case 'h4': {
             const headingText = element.textContent?.trim();
             if (headingText) {
               paragraphs.push(
@@ -84,8 +84,9 @@ const ExportDialog = ({ user, children }: ExportDialogProps) => {
               );
             }
             break;
+          }
 
-          case 'p':
+          case 'p': {
             const pText = element.textContent?.trim();
             if (pText) {
               const runs: TextRun[] = [];
@@ -129,6 +130,7 @@ const ExportDialog = ({ user, children }: ExportDialogProps) => {
               }
             }
             break;
+          }
 
           case 'ul':
           case 'ol':
@@ -147,8 +149,8 @@ const ExportDialog = ({ user, children }: ExportDialogProps) => {
                     spacing: {
                       after: 150,
                       line: 360,
-                      left: 720,
                     },
+                    indent: { left: 720 },
                     alignment: AlignmentType.LEFT,
                   })
                 );
@@ -189,7 +191,7 @@ const ExportDialog = ({ user, children }: ExportDialogProps) => {
   };
 
   const exportAsDocx = async () => {
-    const sections: any[] = [];
+    const sections: Paragraph[] = [];
     const year = new Date().getFullYear();
     
     sections.push(

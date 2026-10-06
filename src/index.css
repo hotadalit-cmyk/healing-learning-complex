@@ -1,99 +1,21 @@
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Roboto:wght@300;400;500;700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
+@import './design-tokens.css';
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-@layer base {
-  :root {
-    --background: 225 30% 8%;
-    --foreground: 0 0% 95%;
-
-    --card: 225 25% 12%;
-    --card-foreground: 0 0% 95%;
-
-    --popover: 225 25% 12%;
-    --popover-foreground: 0 0% 95%;
-
-    --primary: 328 100% 50%;
-    --primary-foreground: 0 0% 100%;
-
-    --secondary: 262 83% 58%;
-    --secondary-foreground: 0 0% 100%;
-
-    --muted: 225 25% 18%;
-    --muted-foreground: 0 0% 60%;
-
-    --accent: 199 89% 48%;
-    --accent-foreground: 0 0% 100%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 225 25% 20%;
-    --input: 225 25% 18%;
-    --ring: 328 100% 50%;
-
-    --radius: 0.75rem;
-
-    --sidebar-background: 225 30% 10%;
-    --sidebar-foreground: 0 0% 90%;
-    --sidebar-primary: 328 100% 50%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 225 25% 15%;
-    --sidebar-accent-foreground: 0 0% 95%;
-    --sidebar-border: 225 25% 20%;
-    --sidebar-ring: 328 100% 50%;
-  }
-
-  .light {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-
-    --primary: 328 100% 50%;
-    --primary-foreground: 0 0% 100%;
-
-    --secondary: 262 83% 58%;
-    --secondary-foreground: 0 0% 100%;
-
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 199 89% 48%;
-    --accent-foreground: 0 0% 100%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 328 100% 50%;
-
-    --radius: 0.75rem;
-  }
+:root {
+  font-family: Manrope, Inter, Arial, sans-serif;
+  color: var(--tk-text);
+  background: var(--tk-warm);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-@layer base {
-  * {
-    @apply border-border;
-  }
-
-  body {
-    @apply bg-background text-foreground font-sans;
-  }
-
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    @apply font-heading;
-  }
-}
+* { box-sizing: border-box; }
+html, body, #root { min-width: 320px; min-height: 100%; margin: 0; }
+body { min-height: 100vh; color: var(--tk-text); background: var(--tk-warm); }
+button, input, select, textarea { font: inherit; }
+button { color: inherit; }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid rgba(47, 128, 237, .42); outline-offset: 2px; }
+a { color: inherit; }
+::selection { color: #fff; background: var(--tk-blue); }
