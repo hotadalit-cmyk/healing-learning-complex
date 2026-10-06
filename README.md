@@ -11,7 +11,7 @@ npm run dev
 
 ```bash
 npm run build
-npx tsc --noEmit
+npm run typecheck
 npm run lint
 ```
 
