@@ -85,16 +85,35 @@ export function currentUtmParams(search = typeof window !== 'undefined' ? window
   };
 }
 
+const dynamicPublicRouteTemplates = new Map<string, string>([
+  ['qr', '/qr/:qrId'],
+  ['status', '/status/:orderId'],
+  ['estimate', '/estimate/:orderId'],
+]);
+
+/** Remove device and order IDs before persisting public URLs locally. */
+export function safePublicPath(pathname: string) {
+  const segments = pathname.split('/').filter(Boolean);
+  return dynamicPublicRouteTemplates.get(segments[0] ?? '') ?? pathname;
+}
+
+function sanitizeStoredAnalytics(value: unknown): PublicAnalyticsEvent[] {
+  if (!Array.isArray(value)) return [];
+  return value
+    .filter((item): item is PublicAnalyticsEvent => Boolean(item && typeof item === 'object' && typeof (item as { path?: unknown }).path === 'string'))
+    .map((item) => ({ ...item, path: safePublicPath(item.path) }));
+}
+
 export function trackPublicEvent(event: string, metadata?: Record<string, string | number | boolean>) {
   if (typeof window === 'undefined') return;
   try {
-    const previous = JSON.parse(window.localStorage.getItem(PUBLIC_ANALYTICS_STORAGE_KEY) ?? '[]') as PublicAnalyticsEvent[];
+    const previous = sanitizeStoredAnalytics(JSON.parse(window.localStorage.getItem(PUBLIC_ANALYTICS_STORAGE_KEY) ?? '[]'));
     const utm = currentUtmParams();
     const entry: PublicAnalyticsEvent = {
       id: `public-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
       event,
       at: new Date().toISOString(),
-      path: window.location.pathname,
+      path: safePublicPath(window.location.pathname),
       ...(utm.utmSource ? { utmSource: utm.utmSource } : {}),
       ...(utm.utmMedium ? { utmMedium: utm.utmMedium } : {}),
       ...(utm.utmCampaign ? { utmCampaign: utm.utmCampaign } : {}),
@@ -109,7 +128,7 @@ export function trackPublicEvent(event: string, metadata?: Record<string, string
 export function readPublicAnalytics() {
   if (typeof window === 'undefined') return [] as PublicAnalyticsEvent[];
   try {
-    return JSON.parse(window.localStorage.getItem(PUBLIC_ANALYTICS_STORAGE_KEY) ?? '[]') as PublicAnalyticsEvent[];
+    return sanitizeStoredAnalytics(JSON.parse(window.localStorage.getItem(PUBLIC_ANALYTICS_STORAGE_KEY) ?? '[]'));
   } catch {
     return [] as PublicAnalyticsEvent[];
   }

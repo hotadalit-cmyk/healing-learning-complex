@@ -97,7 +97,7 @@ export function KnowledgePanel({ role, query: controlledQuery, onQueryChange }: 
       category: category.trim() || 'Регламент',
       source: source.trim(),
       version: version.trim() || '1.0',
-      roles: Array.from(new Set<AppRole>([...draftRoles, 'owner'])), 
+      roles: Array.from(new Set<AppRole>([...draftRoles, 'owner'])),
       tags: title.toLowerCase().split(/[^а-яёa-z0-9]+/i).filter((word) => word.length > 2).slice(0, 12),
       summary: summary.trim(),
       steps,
